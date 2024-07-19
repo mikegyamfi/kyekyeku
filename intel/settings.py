@@ -30,7 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'kyekyeku-ezu4j.ondigitalocean.app'
+    'kyekyeku-ezu4j.ondigitalocean.app',
+    'www.kyekyeku-tech.site'
 ]
 
 
