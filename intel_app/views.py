@@ -60,7 +60,7 @@ def pay_with_wallet(request):
         # }
         #
         # sms_url = 'https://webapp.usmsgh.com/api/sms/send'
-        send_bundle_response = helper.send_bundle(user, phone_number, bundle, reference)
+        send_bundle_response = helper.send_bundle(user, phone_number, bundle, reference, amount)
         try:
             data = send_bundle_response.json()
             print(data)

@@ -41,7 +41,7 @@ def top_up_ref_generator():
     return f"TOPUP-{now_time}{secret}".upper()
 
 
-def send_bundle(user, receiver, bundle_amount, reference):
+def send_bundle(user, receiver, bundle_amount, reference, amount):
     url = "https://controller.geosams.com/api/v1/new_transaction"
     print(receiver, bundle_amount, reference)
 
