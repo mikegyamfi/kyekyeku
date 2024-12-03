@@ -41,7 +41,7 @@ def top_up_ref_generator():
     return f"TOPUP-{now_time}{secret}".upper()
 
 
-def send_bundle(receiver, bundle_amount, reference):
+def send_bundle(user, receiver, bundle_amount, reference):
     url = "https://controller.geosams.com/api/v1/new_transaction"
     print(receiver, bundle_amount, reference)
 
@@ -54,7 +54,8 @@ def send_bundle(receiver, bundle_amount, reference):
         'Content-Type': 'application/json',
         'Authorization': config("BEARER_TOKEN")
     }
-
+    user.wallet -= float(amount)
+    user.save()
     response = requests.request("POST", url, headers=headers, data=payload)
 
     print(response.text)

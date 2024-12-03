@@ -60,7 +60,7 @@ def pay_with_wallet(request):
         # }
         #
         # sms_url = 'https://webapp.usmsgh.com/api/sms/send'
-        send_bundle_response = helper.send_bundle(phone_number, bundle, reference)
+        send_bundle_response = helper.send_bundle(user, phone_number, bundle, reference)
         try:
             data = send_bundle_response.json()
             print(data)
@@ -73,6 +73,7 @@ def pay_with_wallet(request):
         }
 
         sms_url = 'https://webapp.usmsgh.com/api/sms/send'
+
         if send_bundle_response.status_code == 200:
             if data["status"] == "Success":
                 new_transaction = models.IShareBundleTransaction.objects.create(
@@ -83,8 +84,6 @@ def pay_with_wallet(request):
                     transaction_status="Completed"
                 )
                 new_transaction.save()
-                user.wallet -= float(amount)
-                user.save()
                 receiver_message = f"Your bundle purchase has been completed successfully. {bundle}MB has been credited to you by {request.user.phone}.\nReference: {reference}\n"
                 sms_message = f"Hello @{request.user.username}. Your bundle purchase has been completed successfully. {bundle}MB has been credited to {phone_number}.\nReference: {reference}\nCurrent Wallet Balance: {user.wallet}\nThank you for using RijoLink."
 
