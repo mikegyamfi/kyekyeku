@@ -29,9 +29,9 @@ ishare_map = {
 
 def ref_generator():
     now_time = datetime.now().strftime('%H%M%S')
-    secret = secrets.token_hex(2)
+    secret = secrets.token_hex(6)
 
-    return f"{now_time}{secret}".upper()
+    return f"KYE{now_time}KYE{secret}KU".upper()
 
 
 def top_up_ref_generator():
@@ -42,22 +42,20 @@ def top_up_ref_generator():
 
 
 def send_bundle(user, receiver, bundle_amount, reference, amount):
-    url = "https://controller.geosams.com/api/v1/new_transaction"
-    print(receiver, bundle_amount, reference)
+    url = "https://testhub.geosams.com/controller/api/send_bundle/"
 
     payload = json.dumps({
-        "account_number": receiver,
-        "reference": reference,
-        "bundle_amount": bundle_amount
+        "phone_number": str(receiver),
+        "amount": int(bundle_amount),
+        "reference": str(reference),
+        "network": "AT"
     })
     headers = {
-        'Content-Type': 'application/json',
-        'Authorization': config("BEARER_TOKEN")
+        'Authorization': config("CONTROLLER_TOKEN"),
+        'Content-Type': 'application/json'
     }
-    user.wallet -= float(amount)
-    user.save()
-    response = requests.request("POST", url, headers=headers, data=payload)
 
+    response = requests.request("POST", url, headers=headers, data=payload)
     print(response.text)
     return response
 

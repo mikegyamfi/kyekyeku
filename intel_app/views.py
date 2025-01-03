@@ -75,7 +75,7 @@ def pay_with_wallet(request):
         sms_url = 'https://webapp.usmsgh.com/api/sms/send'
 
         if send_bundle_response.status_code == 200:
-            if data["status"] == "Success":
+            if data["code"] == "200":
                 new_transaction = models.IShareBundleTransaction.objects.create(
                     user=request.user,
                     bundle_number=phone_number,
@@ -350,20 +350,24 @@ def mtn_pay_with_wallet(request):
             bundle = models.MTNBundlePrice.objects.get(price=float(amount)).bundle_volume
         print(bundle)
 
-        url = "https://www.geosams.com/api/initiate_mtn_transaction"
+        url = "https://testhub.geosams.com/controller/api/send_bundle/"
 
-        payload = {'receiver': str(phone_number),
-                   'reference': str(reference),
-                   'bundle_volume': str(bundle)}
-        files = [
+        # payload = {'receiver': str(phone_number),
+        #            'reference': str(reference),
+        #            'bundle_volume': str(bundle)}
+        payload = json.dumps({
+            "phone_number": str(phone_number),
+            "amount": int(bundle),
+            "reference": str(reference),
+            "network": "MTN"
+        })
 
-        ]
         headers = {
-            'api-key': config("MTN_KEY")
+            'Authorization': config("CONTROLLER_TOKEN"),
+            'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload, files=files)
-
+        response = requests.request("POST", url, headers=headers, data=payload)
         print(response.text)
         sms_message = f"An order has been placed. {bundle}MB for {phone_number}"
         new_mtn_transaction = models.MTNTransaction.objects.create(
@@ -1310,20 +1314,24 @@ def voda_pay_with_wallet(request):
         user.wallet -= float(amount)
         user.save()
 
-        url = "https://www.geosams.com/api/initiate_telecel_transaction"
+        url = "https://testhub.geosams.com/controller/api/send_bundle/"
 
-        payload = {'receiver': str(phone_number),
-                   'reference': str(reference),
-                   'bundle_volume': str(bundle)}
-        files = [
+        # payload = {'receiver': str(phone_number),
+        #            'reference': str(reference),
+        #            'bundle_volume': str(bundle)}
+        payload = json.dumps({
+            "phone_number": str(phone_number),
+            "amount": int(bundle),
+            "reference": str(reference),
+            "network": "Telecel"
+        })
 
-        ]
         headers = {
-            'api-key': config("MTN_KEY")
+            'Authorization': config("CONTROLLER_TOKEN"),
+            'Content-Type': 'application/json'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload, files=files)
-
+        response = requests.request("POST", url, headers=headers, data=payload)
         print(response.text)
         return JsonResponse({'status': "Your transaction will be completed shortly", 'icon': 'success'})
     return redirect('voda')
