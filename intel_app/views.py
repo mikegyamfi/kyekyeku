@@ -350,7 +350,7 @@ def mtn_pay_with_wallet(request):
             bundle = models.MTNBundlePrice.objects.get(price=float(amount)).bundle_volume
         print(bundle)
 
-        url = "https://testhub.geosams.com/controller/api/send_bundle/"
+        url = "https://www.geosams.com/controller/api/send_bundle/"
 
         # payload = {'receiver': str(phone_number),
         #            'reference': str(reference),
@@ -1314,7 +1314,7 @@ def voda_pay_with_wallet(request):
         user.wallet -= float(amount)
         user.save()
 
-        url = "https://testhub.geosams.com/controller/api/send_bundle/"
+        url = "https://www.geosams.com/controller/api/send_bundle/"
 
         # payload = {'receiver': str(phone_number),
         #            'reference': str(reference),
